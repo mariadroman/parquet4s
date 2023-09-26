@@ -159,7 +159,7 @@ Stats
   .stats(Path("path/to/file"))
 ```
 
-### Akka API changes
+### Pekko API changes
 
 Changes related to generic records are the same as in the core library.
 

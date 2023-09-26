@@ -6,9 +6,9 @@ permalink: docs/partitioning/
 
 # Partitioning
 
-Parquet4s supports both reading partitions and partitioning data during writing. Writing partitioned data is available **only** in Akka and FS2 modules. Reading partitions is enabled by default in all Parquet4S modules.
+Parquet4s supports both reading partitions and partitioning data during writing. Writing partitioned data is available **only** in Pekko and FS2 modules. Reading partitions is enabled by default in all Parquet4S modules.
 
-#### Akka & FS2
+#### Pekko & FS2
 
 Reading partitions is handled by default by `fromParquet` function. Before data is read Parquet4s scans the directory and resolves partition fields and values. After reading, each record is enriched according to the partition directory tree the file resides in.
 
@@ -25,14 +25,14 @@ Since version 2.12.0 Parquet4S always reads partitioned data. Writing partitions
  - When reading partitioned data make sure that partition directory names follow Hive format.
  - Parquet4s takes care of building proper schemas for partitioned data. However, when you use a custom type and a custom schema definition remember not to include the partition field in the schema — because it is supposed to be encoded as a directory name.
 
-In Akka:
+In Pekko:
 ```scala mdoc:compile-only
-import akka.NotUsed
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.{Sink, Source}
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.{Sink, Source}
 import com.github.mjakubowski84.parquet4s.{Col, ParquetStreams, Path}
 
-object AkkaExample extends App {
+object PekkoExample extends App {
 
   implicit val actorSystem: ActorSystem = ActorSystem()
   import actorSystem.dispatcher

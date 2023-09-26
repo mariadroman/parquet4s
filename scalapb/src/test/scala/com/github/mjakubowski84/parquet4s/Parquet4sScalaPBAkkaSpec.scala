@@ -1,7 +1,7 @@
 package com.github.mjakubowski84.parquet4s
 
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.{Keep, Sink, Source}
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.{Keep, Sink, Source}
 import com.github.mjakubowski84.parquet4s.DataOuterClass.Data as JData
 import com.github.mjakubowski84.parquet4s.ScalaPBImplicits.*
 import com.github.mjakubowski84.parquet4s.TestData.*
@@ -14,13 +14,13 @@ import org.scalatest.matchers.should.Matchers
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-class Parquet4sScalaPBAkkaSpec extends AsyncFlatSpec with Matchers with BeforeAndAfterAll {
+class Parquet4sScalaPBPekkoSpec extends AsyncFlatSpec with Matchers with BeforeAndAfterAll {
 
   implicit private val system: ActorSystem = ActorSystem()
 
   override def afterAll(): Unit = Await.ready(system.terminate(), Duration.Inf)
 
-  "akka module" should "be compatible with parquet-protobuf" in {
+  "pekko module" should "be compatible with parquet-protobuf" in {
     val outFile    = InMemoryOutputFile(initBufferSize = 4800)
     val hadoopConf = new Configuration()
     hadoopConf.setBoolean(ProtoWriteSupport.PB_SPECS_COMPLIANT_WRITE, true)
@@ -56,7 +56,7 @@ class Parquet4sScalaPBAkkaSpec extends AsyncFlatSpec with Matchers with BeforeAn
       )
       .toMat(Sink.seq)(Keep.right)
     // Due to bug in ProtoParquetReader - the fact that read elements are unsafe instances of JData.Builder - and
-    // as Akka Streams always try to read more than a single element from the stream (even when you change the buffer
+    // as Pekko Streams always try to read more than a single element from the stream (even when you change the buffer
     // size), we have to call `build()` function as soon as it is possible. Otherwise the data from the next element
     // will override properties of the previous one.
 

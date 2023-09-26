@@ -5,8 +5,8 @@ options:
   - title: Quick Start
     url: docs/quick_start
 
-  - title: Integration with Akka Streams
-    url: docs/akka
+  - title: Integration with Pekko Streams
+    url: docs/pekko
 
   - title: Integration with FS2
     url: docs/fs2

@@ -160,8 +160,8 @@ workflows:
           requires:
             - build
       - test:
-          name: test_akka
-          project: akka
+          name: test_pekko
+          project: pekko
           requires:
             - build
       - test:
@@ -194,8 +194,8 @@ workflows:
             branches:
               ignore: /.*/
       - test:
-          name: test_akka
-          project: akka
+          name: test_pekko
+          project: pekko
           requires:
             - build
           filters:
@@ -226,7 +226,7 @@ workflows:
       - release:
           requires:
             - test_core
-            - test_akka
+            - test_pekko
             - test_fs2
             - test_scala_pb
           filters:

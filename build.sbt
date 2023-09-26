@@ -89,13 +89,13 @@ lazy val core = (project in file("core"))
   .settings(testReportSettings)
   .dependsOn(testkit % "it->compile")
 
-lazy val akka = (project in file("akka"))
+lazy val pekko = (project in file("pekko"))
   .configs(IntegrationTest)
   .settings(
-    name := "parquet4s-akka",
+    name := "parquet4s-pekko",
     crossScalaVersions := supportedScalaVersions,
     libraryDependencies ++= Seq(
-      "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+      "org.apache.pekko" %% "pekko-stream" % pekkoVersion,
       "org.apache.hadoop" % "hadoop-client" % hadoopVersion % Provided
     ),
     excludeDependencies ++= Seq(
@@ -151,7 +151,7 @@ lazy val scalaPB = (project in file("scalapb"))
   .settings(itSettings)
   .settings(publishSettings)
   .settings(testReportSettings)
-  .dependsOn(core % "compile->compile;test->test", akka % "test->compile", fs2 % "test->compile")
+  .dependsOn(core % "compile->compile;test->test", pekko % "test->compile", fs2 % "test->compile")
 
 lazy val testkit = (project in file("testkit"))
   .settings(
@@ -182,10 +182,7 @@ lazy val examples = (project in file("examples"))
       "io.github.embeddedkafka" %% "embedded-kafka" % "3.5.1",
       "ch.qos.logback" % "logback-classic" % logbackVersion,
       "org.slf4j" % "log4j-over-slf4j" % slf4jVersion,
-      "com.typesafe.akka" %% "akka-stream-kafka" % {
-        if (scalaVersion.value == twoThirteen) { "3.0.1" } // non-licensed version
-        else { "2.1.1" }
-      },
+      "org.apache.pekko" %% "pekko-connectors-kafka" % "1.0.0",
       "com.github.fd4s" %% "fs2-kafka" % "3.0.1",
       "co.fs2" %% "fs2-io" % fs2Version
     ),
@@ -202,7 +199,7 @@ lazy val examples = (project in file("examples"))
     )
   )
   .settings(compilationSettings)
-  .dependsOn(akka, fs2, scalaPB)
+  .dependsOn(pekko, fs2, scalaPB)
 
 lazy val coreBenchmarks = (project in file("coreBenchmarks"))
   .settings(
@@ -225,9 +222,9 @@ lazy val coreBenchmarks = (project in file("coreBenchmarks"))
   .enablePlugins(JmhPlugin)
   .dependsOn(core)
 
-lazy val akkaBenchmarks = (project in file("akkaBenchmarks"))
+lazy val pekkoBenchmarks = (project in file("pekkoBenchmarks"))
   .settings(
-    name := "parquet4s-akka-benchmarks",
+    name := "parquet4s-pekko-benchmarks",
     publish / skip := true,
     publishLocal / skip := true,
     crossScalaVersions := supportedScalaVersions,
@@ -244,7 +241,7 @@ lazy val akkaBenchmarks = (project in file("akkaBenchmarks"))
   )
   .settings(compilationSettings)
   .enablePlugins(JmhPlugin)
-  .dependsOn(akka)
+  .dependsOn(pekko)
 
 lazy val fs2Benchmarks = (project in file("fs2Benchmarks"))
   .settings(
@@ -284,7 +281,7 @@ lazy val documentation = (project in file("site"))
       "org.scala-lang.modules" %% "scala-collection-compat" % scalaCollectionCompatVersion
     )
   )
-  .dependsOn(core, akka, fs2, scalaPB)
+  .dependsOn(core, pekko, fs2, scalaPB)
   .enablePlugins(MicrositesPlugin)
 
 lazy val root = (project in file("."))
@@ -298,13 +295,13 @@ lazy val root = (project in file("."))
   )
   .aggregate(
     core,
-    akka,
+    pekko,
     fs2,
     scalaPB,
     testkit,
     examples,
     coreBenchmarks,
-    akkaBenchmarks,
+    pekkoBenchmarks,
     fs2Benchmarks,
     documentation
   )
